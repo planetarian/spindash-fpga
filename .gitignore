@@ -1,1 +1,12 @@
-impl/
+impl/gwsynthesis/
+impl/temp/
+
+impl/pnr/cmd.do
+impl/pnr/*.html
+impl/pnr/*.txt
+impl/pnr/*.log
+impl/pnr/*.timing_paths
+impl/pnr/*.fs
+impl/pnr/*.bin
+impl/pnr/*.binx
+impl/pnr/*.db
