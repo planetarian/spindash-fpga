@@ -1,0 +1,3 @@
+[submodule "src/jt12"]
+	path = src/jt12
+	url = https://github.com/planetarian/jt12
