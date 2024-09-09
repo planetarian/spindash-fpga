@@ -72,7 +72,7 @@
  "SEU_HANDLER_MODE" : "auto",
  "SSPI" : true,
  "STOP_SEU_HANDLER" : false,
- "Show_All_Warnings" : false,
+ "Show_All_Warnings" : true,
  "Synthesize_tool" : "GowinSyn",
  "TclPre" : "",
  "TopModule" : "",
@@ -83,6 +83,6 @@
  "VHDL_Standard" : "VHDL_Std_1993",
  "Verilog_Standard" : "Vlg_Std_2001",
  "WAKE_UP" : "0",
- "show_all_warnings" : false,
+ "show_all_warnings" : true,
  "turn_off_bg" : false
 }

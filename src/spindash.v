@@ -51,8 +51,8 @@ assign cen = clkdiv == 0;
 // debug outputs
 assign DEBUG[0] = clk50;
 assign DEBUG[1] = cen;
-assign DEBUG[2] = wr_n;
-assign DEBUG[3] = addr[0];
+assign DEBUG[2] = addr[0];
+assign DEBUG[3] = rst;
 assign LEDREADY = rst;
 assign LEDDONE = addr[0];
 
