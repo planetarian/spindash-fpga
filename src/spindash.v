@@ -11,8 +11,8 @@ module spindash(
     // configuration
     //input           en_hifi_pcm,
     // combined output
-    output  signed  [15:0]  snd_right,
-    output  signed  [15:0]  snd_left,
+    output          pdm_left,
+    output          pdm_right,
     output          snd_sample,
     // debug outputs
     output  [3:0]   DEBUG,
@@ -51,10 +51,13 @@ assign cen = clkdiv == 0;
 // debug outputs
 assign DEBUG[0] = clk50;
 assign DEBUG[1] = cen;
-assign DEBUG[2] = addr[0];
-assign DEBUG[3] = rst;
+assign DEBUG[2] = pdm_left;
+assign DEBUG[3] = snd_sample;
 assign LEDREADY = rst;
 assign LEDDONE = addr[0];
+
+wire signed [15:0] snd_right;
+wire signed [15:0] snd_left;
 
 // comment out this module and rst suddenly works??
 jt12_top fm (
@@ -83,6 +86,19 @@ jt12_top fm (
     .IOA_in         ( 8'b0          ),
     .IOB_in         ( 8'b0          )
 );//*/
+
+delta_sigma_adc #(.WIDTH(16)) pdm_l (
+    .rst(rst),
+    .clk(clk50),
+    .din(snd_left),
+    .dout(pdm_left)
+);
+delta_sigma_adc #(.WIDTH(16)) pdm_r (
+    .rst(rst),
+    .clk(clk50),
+    .din(snd_right),
+    .dout(pdm_right)
+);
 
 
 endmodule
