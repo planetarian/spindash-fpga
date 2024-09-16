@@ -6,9 +6,6 @@
     <Device name="GW5A-25B" pn="GW5A-LV25MG121NC1/I0">gw5a25b-003</Device>
     <FileList>
         <File path="src/delta_sigma_adc.v" type="file.verilog" enable="1"/>
-        <File path="src/gowin/pll40.v" type="file.verilog" enable="1"/>
-        <File path="src/gowin/pll46.v" type="file.verilog" enable="1"/>
-        <File path="src/gowin/pll53.v" type="file.verilog" enable="1"/>
         <File path="src/jt12/hdl/adpcm/jt10_adpcm.v" type="file.verilog" enable="1"/>
         <File path="src/jt12/hdl/adpcm/jt10_adpcm_acc.v" type="file.verilog" enable="1"/>
         <File path="src/jt12/hdl/adpcm/jt10_adpcm_cnt.v" type="file.verilog" enable="1"/>
@@ -97,7 +94,10 @@
         <File path="src/jt12/jt89/hdl/jt89_tone.v" type="file.verilog" enable="1"/>
         <File path="src/jt12/jt89/hdl/jt89_vol.v" type="file.verilog" enable="1"/>
         <File path="src/spindash.v" type="file.verilog" enable="1"/>
-        <File path="src/spindash-fpga.cst" type="file.cst" enable="1"/>
-        <File path="src/spindash-fpga.sdc" type="file.sdc" enable="1"/>
+        <File path="src/primer25k/spindash-fpga-primer25k.cst" type="file.cst" enable="1"/>
+        <File path="src/primer25k/spindash-fpga-primer25k.sdc" type="file.sdc" enable="1"/>
+        <File path="src/primer25k/gowin/pll40.v" type="file.verilog" enable="1"/>
+        <File path="src/primer25k/gowin/pll46.v" type="file.verilog" enable="1"/>
+        <File path="src/primer25k/gowin/pll53.v" type="file.verilog" enable="1"/>
     </FileList>
 </Project>
