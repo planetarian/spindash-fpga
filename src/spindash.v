@@ -20,19 +20,19 @@ module spindash(
     output          LEDDONE
 );
 
-/*
+
 // 53.7Mhz genesis clock; switch to this once everything else works
 wire clk_jt;
 pll53 pll(
     .clkin(clk50),
     .clkout0(clk_jt)
-);*/
+);
 
 // clock enable divides incoming clock by 6
 // see: https://github.com/supersat/hadbadge2019_fpgasoc/blob/ym2612/soc/audio/audio_wb.v
 wire cen;
 reg [2:0] clkdiv;
-always @(posedge clk50)
+always @(posedge clk_jt)
 begin
     if (rst)
     begin
@@ -49,7 +49,7 @@ end
 assign cen = clkdiv == 0;
 
 // debug outputs
-assign DEBUG[0] = clk50;
+assign DEBUG[0] = clk_jt;
 assign DEBUG[1] = cen;
 assign DEBUG[2] = pdm_left;
 assign DEBUG[3] = snd_sample;
@@ -63,7 +63,7 @@ wire signed [15:0] snd_left;
 jt12_top fm (
     // inputs
     .rst(rst),
-    .clk(clk50),
+    .clk(clk_jt),
     .cen(cen),
     .din(din),
     .addr(addr),
@@ -88,14 +88,14 @@ jt12_top fm (
 );//*/
 
 delta_sigma_adc #(.WIDTH(16)) pdm_l (
-    .rst(rst),
-    .clk(clk50),
+    .rst(1'b0),
+    .clk(clk_jt),
     .din(snd_left),
     .dout(pdm_left)
 );
 delta_sigma_adc #(.WIDTH(16)) pdm_r (
-    .rst(rst),
-    .clk(clk50),
+    .rst(1'b0),
+    .clk(clk_jt),
     .din(snd_right),
     .dout(pdm_right)
 );
