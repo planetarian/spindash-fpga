@@ -1,4 +1,4 @@
-module spindash #(parameter YM_COUNT=5)(
+module spindash #(parameter YM_COUNT=4)(
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
     input           clk50, // base clock (50mhz)
   //input           cen,   // clock enable (cpu clock/6), if not needed send 1'b1
@@ -31,7 +31,7 @@ pll53 pll(
 
 // clock enable divides incoming clock by 6
 // see: https://github.com/supersat/hadbadge2019_fpgasoc/blob/ym2612/soc/audio/audio_wb.v
-wire cen;
+/*wire cen;
 reg [2:0] clkdiv;
 always @(posedge clk_jt)
 begin
@@ -47,11 +47,11 @@ begin
             clkdiv <= clkdiv + 1;
     end
 end
-assign cen = clkdiv == 0;
+assign cen = clkdiv == 0;*/
 
 // debug outputs
 assign DEBUG[0] = clk_jt;
-assign DEBUG[1] = cen;
+assign DEBUG[1] = pdm_left;
 assign DEBUG[2] = pdm_left;
 assign DEBUG[3] = snd_sample;
 assign LEDREADY = rst;
@@ -91,14 +91,14 @@ assign snd_sample = snd_sample_ic[0];
 genvar i;
 generate
     for (i = 0; i < YM_COUNT; i = i+1)
-    begin
+    begin : fm
         assign cs_n[i] = cs != i+1;
 
-        jt12_top fm (
+        jt12_top ym (
             // inputs
             .rst(rst),
             .clk(clk_jt),
-            .cen(cen),
+            .cen(1'b1),
             .din(din),
             .addr(addr),
             .cs_n(cs_n[i]),
