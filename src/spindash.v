@@ -83,7 +83,7 @@ assign snd_right = snd_right_sum[YM_COUNT-1];
 
 // chip select passthru for daisy-chaining multiple FPGAs
 // supports up to 31 selectable chips
-assign cs_thru = cs < YM_COUNT+1 ? 5'b0 : cs - (YM_COUNT+1);
+assign cs_thru = cs <= YM_COUNT ? 5'b0 : cs - YM_COUNT;
 // individual CS signals to send to each YM
 wire [YM_COUNT-1:0] cs_n;
 
