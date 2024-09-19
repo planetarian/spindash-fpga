@@ -1,10 +1,10 @@
 module spindash #(parameter YM_COUNT=9)(
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
-    input           clk, // base clock (50mhz)
+    input           clk,   // base clock (50mhz)
   //input           cen,   // clock enable (cpu clock/6), if not needed send 1'b1
     input   [7:0]   din,   // data write value
     input   [1:0]   addr,  // A0: reg/data; A1: channels 1-3/4-6
-    input   [4:0]   cs, // 1-31: chip select, 0:none
+    input   [4:0]   cs,    // 1-31: chip select, 0:none
     input           wr_n,  // write reg/data (active low)
     output  [4:0]   cs_thru, // pass cs through to next chip
     output  [7:0]   dout,  // data read value
@@ -22,7 +22,7 @@ module spindash #(parameter YM_COUNT=9)(
 );
 
 
-// 53.7Mhz genesis clock; switch to this once everything else works
+// 53.7Mhz genesis clock
 wire clk_jt;
 pll53 pll(
     .clkin(clk),
@@ -54,11 +54,12 @@ assign DEBUG[3] = snd_sample;
 assign LEDREADY = rst;
 assign LEDDONE = addr[0];
 
-
+// 16-bit analog output from each instance
 wire signed [15:0] snd_left_ic [YM_COUNT-1:0];
 wire signed [15:0] snd_right_ic [YM_COUNT-1:0];
 
 // sum together all the outputs
+// seriously, figure out a better way to do this
 reg signed [15+$clog2(YM_COUNT):0] snd_left_sum [YM_COUNT-1:0];
 reg signed [15+$clog2(YM_COUNT):0] snd_right_sum [YM_COUNT-1:0];
 integer s;
@@ -74,17 +75,23 @@ always @* begin
         end
     end
 end
+// final entry in the sum array is the sum of all outputs
 wire signed [15 + $clog2(YM_COUNT):0] snd_left;
 wire signed [15 + $clog2(YM_COUNT):0] snd_right;
 assign snd_left = snd_left_sum[YM_COUNT-1];
 assign snd_right = snd_right_sum[YM_COUNT-1];
 
+// chip select passthru for daisy-chaining multiple FPGAs
+// supports up to 31 selectable chips
 assign cs_thru = cs < YM_COUNT+1 ? 5'b0 : cs - (YM_COUNT+1);
+// individual CS signals to send to each YM
 wire [YM_COUNT-1:0] cs_n;
 
+// posedge when a new sample is available
 wire [YM_COUNT-1:0] snd_sample_ic;
 assign snd_sample = snd_sample_ic[0];
 
+// generate the YM chip instances
 genvar i;
 generate
     for (i = 0; i < YM_COUNT; i = i+1)
@@ -121,18 +128,18 @@ generate
     end
 endgenerate
 
-        delta_sigma_adc #(.WIDTH(16 + $clog2(YM_COUNT))) pdm_l (
-            .rst(1'b0),
-            .clk(clk_jt),
-            .din(snd_left),
-            .dout(pdm_left)
-        );
-        delta_sigma_adc #(.WIDTH(16 + $clog2(YM_COUNT))) pdm_r (
-            .rst(1'b0),
-            .clk(clk_jt),
-            .din(snd_right),
-            .dout(pdm_right)
-        );
-
+// get the mixed output as a pair of PDM signals
+delta_sigma_adc #(.WIDTH(16 + $clog2(YM_COUNT))) pdm_l (
+    .rst(1'b0),
+    .clk(clk_jt),
+    .din(snd_left),
+    .dout(pdm_left)
+);
+delta_sigma_adc #(.WIDTH(16 + $clog2(YM_COUNT))) pdm_r (
+    .rst(1'b0),
+    .clk(clk_jt),
+    .din(snd_right),
+    .dout(pdm_right)
+);
 
 endmodule
