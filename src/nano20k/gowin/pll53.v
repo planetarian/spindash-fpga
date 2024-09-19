@@ -5,7 +5,7 @@
 //Part Number: GW2AR-LV18QN88C8/I7
 //Device: GW2AR-18
 //Device Version: C
-//Created Time: Mon Sep 16 19:09:52 2024
+//Created Time: Wed Sep 18 20:01:03 2024
 
 module pll53 (clkout0, clkin);
 
