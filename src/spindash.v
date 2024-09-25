@@ -1,4 +1,4 @@
-module spindash #(parameter YM_COUNT=7)( // how many jt12 instances to generate
+module spindash #(parameter YM_COUNT=6)( // how many jt12 instances to generate
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
     input           clk,   // base clock (50mhz)
   //input           cen,   // clock enable (cpu clock/6), if not needed send 1'b1
@@ -10,7 +10,7 @@ module spindash #(parameter YM_COUNT=7)( // how many jt12 instances to generate
     output  [7:0]   dout,  // data read value
     output          irq_n, // IRQ pin
     // configuration
-    //input           en_hifi_pcm,
+  //input           en_hifi_pcm,
     // combined output
     output          pdm_left,
     output          pdm_right,
