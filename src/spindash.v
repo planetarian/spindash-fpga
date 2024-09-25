@@ -1,20 +1,23 @@
 module spindash #(parameter YM_COUNT=6)( // how many jt12 instances to generate
+    // clock/reset
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
     input           clk,   // base clock (50mhz)
   //input           cen,   // clock enable (cpu clock/6), if not needed send 1'b1
-    input   [7:0]   din,   // data write value
+    // command input
     input   [1:0]   addr,  // A0: reg/data; A1: channels 1-3/4-6
+    input   [7:0]   din,   // data write value
     input   [4:0]   cs,    // 1-31: chip select, 0:none
     input           wr_n,  // write reg/data (active low)
+    // configuration
+  //input           en_hifi_pcm,
+    
     output  [4:0]   cs_thru, // pass cs through to next chip
     output  [7:0]   dout,  // data read value
     output          irq_n, // IRQ pin
-    // configuration
-  //input           en_hifi_pcm,
     // combined output
     output          pdm_left,
     output          pdm_right,
-    output          snd_sample, // posedge on new sample (~62.32khz)
+    output          snd_sample, // posedge on new sample (~62.157khz)
     // debug outputs
     output  [3:0]   DEBUG,
     output          LEDREADY,
