@@ -1,4 +1,4 @@
-module spindash #(parameter YM_COUNT=6)( // how many jt12 instances to generate
+module spindash #(parameter YM_COUNT=9)( // how many jt12 instances to generate
     // clock/reset
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
     input           clk,   // base clock (50mhz)
