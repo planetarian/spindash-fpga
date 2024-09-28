@@ -1,4 +1,13 @@
-module spindash #(parameter YM_COUNT=9)( // how many jt12 instances to generate
+`timescale 1ns / 1ps
+
+module spindash #(parameter YM_COUNT=
+// how many jt12 instances to generate
+`ifdef HIGH_CAPACITY 
+45 // ~100K LUT: Artix-7 XC7A100T
+`else
+9 // ~20K LUT: Nano20K/Primer25K
+`endif
+)(
     // clock/reset
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
     input           clk,   // base clock (50mhz)
@@ -6,12 +15,12 @@ module spindash #(parameter YM_COUNT=9)( // how many jt12 instances to generate
     // command input
     input   [1:0]   addr,  // A0: reg/data; A1: channels 1-3/4-6
     input   [7:0]   din,   // data write value
-    input   [4:0]   cs,    // 1-31: chip select, 0:none
+    input   [5:0]   cs,    // 1+: chip select, 0:none
     input           wr_n,  // write reg/data (active low)
     // configuration
   //input           en_hifi_pcm,
     
-    output  [4:0]   cs_thru, // pass cs through to next chip
+    output  [5:0]   cs_thru, // pass cs through to next chip
     output  [7:0]   dout,  // data read value
     output          irq_n, // IRQ pin
     // combined output
@@ -36,6 +45,9 @@ module spindash #(parameter YM_COUNT=9)( // how many jt12 instances to generate
 wire clk_jt;
 pll53 pll(
     .clkin(clk),
+`ifdef PLL_HAS_RESET
+    .reset(rst),
+`endif
     .clkout0(clk_jt)
 );
 
