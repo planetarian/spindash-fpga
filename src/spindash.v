@@ -3,14 +3,19 @@
 module spindash #(parameter YM_COUNT=
 // how many jt12 instances to generate
 `ifdef HIGH_CAPACITY 
-45 // ~100K LUT: Artix-7 XC7A100T
+9 // ~100K LUT: Artix-7 XC7A100T
 `else
 9 // ~20K LUT: Nano20K/Primer25K
 `endif
 )(
     // clock/reset
     input           rst,   // reset (active high), should be at least 6 clk&cen cycles long
+`ifdef CLK_DIFFERENTIAL
+    input           clk_n,
+    input           clk_p,
+`else
     input           clk,   // base clock (50mhz)
+`endif
   //input           cen,   // clock enable (cpu clock/6), if not needed send 1'b1
     // command input
     input   [1:0]   addr,  // A0: reg/data; A1: channels 1-3/4-6
@@ -20,9 +25,11 @@ module spindash #(parameter YM_COUNT=
     // configuration
   //input           en_hifi_pcm,
     
+`ifdef CS_PASSTHRU
     output  [5:0]   cs_thru, // pass cs through to next chip
-    output  [7:0]   dout,  // data read value
-    output          irq_n, // IRQ pin
+`endif
+  //output  [7:0]   dout,  // data read value
+  //utput          irq_n, // IRQ pin
     // combined output
     output          pdm_left,
     output          pdm_right,
@@ -32,6 +39,15 @@ module spindash #(parameter YM_COUNT=
     output          LEDREADY,
     output          LEDDONE
 );
+
+`ifdef CLK_DIFFERENTIAL
+IBUFDS sys_clk_ibufgds
+(
+	.O        (clk),
+	.I        (clk_p),
+	.IB       (clk_n)
+);
+`endif
 
 // clocks
 // clk            50.0000mhz
@@ -108,7 +124,9 @@ assign snd_right = snd_right_sum[YM_COUNT-1];
 
 // chip select passthru for daisy-chaining multiple FPGAs
 // supports up to 31 selectable chips
+`ifdef CS_PASSTHRU
 assign cs_thru = cs <= YM_COUNT ? 5'b0 : cs - YM_COUNT;
+`endif
 // individual CS signals to send to each YM
 wire [YM_COUNT-1:0] cs_n;
 
